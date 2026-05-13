@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Daily Homework</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <style>
+        :root {
+            --primary-color: #166534;
+            --secondary-color: #22c55e;
+            --bg-color: #f0fdf4;
+            --text-color: #1f2937;
+            --border-color: #d1d5db;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-color); padding: 10px; }
+        .app-container { max-width: 800px; margin: 0 auto; position: relative; }
+
+        .top-bar { display: flex; justify-content: flex-end; padding: 10px 0; }
+        .icon-btn { background: var(--primary-color); color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+
+        #homework-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); margin: 0 auto; }
+
+        /* Header */
+        .header { display: flex; align-items: center; justify-content: center; gap: 15px; border-bottom: 3px solid var(--primary-color); padding-bottom: 15px; margin-bottom: 20px; }
+        .logo-wrapper { display: flex; align-items: center; height: 40px; } 
+        .logo-box { height: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .logo-box img { height: 100%; width: auto; object-fit: contain; }
+        .upload-placeholder { font-size: 10px; border: 1px dashed #ccc; padding: 5px; color: #666; }
+        .school-name-display { font-size: 28px; font-weight: 700; color: var(--primary-color); text-transform: uppercase; line-height: 40px; white-space: nowrap; }
+
+        /* Info Section */
+        .info-section { display: flex; flex-wrap: nowrap; justify-content: space-between; align-items: center; margin-bottom: 20px; background: #dcfce7; padding: 12px 15px; border-radius: 8px; border: 1px solid #bbf7d0; }
+        .left-info, .right-info { display: flex; align-items: center; gap: 10px; font-weight: 600; color: var(--primary-color); }
+        .custom-select, .date-input { padding: 6px 10px; border-radius: 5px; border: 1px solid var(--primary-color); font-weight: 600; outline: none; background: white; color: var(--primary-color); }
+        .show-on-export { display: none; font-size: 18px; font-weight: 700; color: var(--primary-color); }
+
+        /* Table Design */
+        .hw-table { width: 100%; margin-bottom: 15px; }
+        
+        .hw-header { display: flex; background: var(--primary-color); color: white; border-radius: 8px 8px 0 0; font-weight: 600; text-align: center; }
+        .hw-header > div { padding: 12px; display: flex; align-items: center; justify-content: center; }
+        .hw-header > div:nth-child(1) { flex: 0 0 140px; }
+        .hw-header > div:nth-child(2) { flex: 1; }
+        .hw-header > div:nth-child(3) { flex: 0 0 140px; }
+        
+        .hw-row { display: flex; border: 1px solid var(--border-color); border-top: none; min-height: 50px; }
+        .hw-row:last-child { border-radius: 0 0 8px 8px; border-bottom: 1px solid var(--border-color); }
+        .hw-row:last-child .col-subject { border-bottom-left-radius: 8px; }
+        .hw-row:last-child .col-tasks { border-bottom-right-radius: 8px; }
+        
+        .col-subject { flex: 0 0 140px; padding: 12px; font-weight: 600; background: #f8fafc; border-right: 1px solid var(--border-color); display: flex; align-items: center; justify-content: flex-start; text-align: left; }
+        .col-tasks { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+
+        .task-item { display: flex; flex: 1; align-items: stretch; border-top: 1px dashed #9ca3af; }
+        .task-item:first-child { border-top: none; }
+        
+        /* FIX: Precise Padding replaces Flexbox to keep Empty Cursor perfectly centered */
+        .task-input { 
+            flex: 1; 
+            padding: 14px 12px; 
+            outline: none; 
+            font-size: 14px; 
+            line-height: 1.5; 
+            word-break: break-word; 
+        }
+        .task-input:empty:before { content: attr(data-placeholder); color: #9ca3af; pointer-events: none; }
+        
+        .task-actions { flex: 0 0 140px; display: flex; gap: 8px; align-items: center; justify-content: center; padding: 10px 12px; border-left: 1px solid var(--border-color); }
+        .chk-label { display: flex; align-items: center; gap: 3px; font-size: 12px; font-weight: 500; cursor: pointer; }
+        .export-task-text { flex: 0 0 140px; display: none; padding: 12px; border-left: 1px solid var(--border-color); font-weight: 600; color: var(--primary-color); align-items: center; justify-content: center; font-size: 14px; text-align: center; }
+
+        .add-btn-wrapper { margin-bottom: 20px; }
+        .add-temp-btn { display: inline-block; font-size: 13px; color: var(--primary-color); cursor: pointer; background: none; border: none; font-weight: 600; }
+        
+        .note-section { margin-top: 10px; }
+        .note-input { width: 100%; border: 1px dashed #6b7280; padding: 10px 12px; border-radius: 8px; outline: none; resize: none; min-height: 42px; overflow: hidden; font-family: 'Poppins', sans-serif; font-size: 14px; line-height: 1.5; color: var(--text-color); background: white; }
+
+        .bottom-action { display: flex; justify-content: center; margin-top: 20px; margin-bottom: 40px; }
+        .share-btn { background: #25D366; color: white; font-size: 16px; padding: 12px 30px; border-radius: 30px; border: none; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+
+        /* Modal */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-content { background: white; width: 95%; max-width: 600px; padding: 20px; border-radius: 12px; max-height: 90vh; overflow-y: auto; }
+        .manager-section { border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; margin-bottom: 12px; background: #f8fafc; }
+        .manager-controls { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+        .manager-controls select, .manager-controls input { flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 4px; min-width: 120px; }
+        .btn-add { background: var(--primary-color); color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; }
+        .btn-del { background: #ef4444; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; }
+        .subject-list { list-style: none; background: white; border: 1px solid #ddd; border-radius: 4px; max-height: 150px; overflow-y: auto; }
+        .subject-list li { display: flex; justify-content: space-between; padding: 8px; border-bottom: 1px solid #eee; font-size: 13px; }
+
+        /* EXPORTING CLASSES */
+        body.exporting .hide-on-export { display: none !important; }
+        body.exporting .show-on-export { display: block !important; }
+        body.exporting .show-on-export-flex { display: flex !important; }
+        body.exporting .note-input { border: none !important; padding: 0 !important; margin: 0 !important; background: transparent; min-height: 0 !important; }
+        body.exporting .note-section { margin-top: 5px; margin-bottom: 0; }
+
+        /* MOBILE RESPONSIVENESS */
+        @media (max-width: 600px) {
+            body:not(.force-desktop) .hw-header > div:nth-child(1),
+            body:not(.force-desktop) .col-subject { flex: 0 0 85px; }
+            
+            body:not(.force-desktop) .hw-header > div:nth-child(3),
+            body:not(.force-desktop) .task-actions,
+            body:not(.force-desktop) .export-task-text { flex: 0 0 70px; }
+
+            body:not(.force-desktop) .task-actions { 
+                flex-direction: column; 
+                gap: 5px; 
+                padding: 8px 10px; 
+                align-items: flex-start; 
+                justify-content: center; 
+            }
+            body:not(.force-desktop) .chk-label { font-size: 11px; }
+            
+            /* PADDING UPDATE FOR MOBILE CURSOR ALIGNMENT */
+            body:not(.force-desktop) .task-input { padding: 14px 8px; font-size: 13px; }
+            body:not(.force-desktop) .col-subject { font-size: 13px; padding: 10px 8px; }
+            body:not(.force-desktop) .hw-header > div { padding: 10px 5px; font-size: 13px; }
+            
+            body:not(.force-desktop) .school-name-display { font-size: 17px; line-height: 24px; text-align: center; }
+            body:not(.force-desktop) .header { gap: 10px; padding-bottom: 10px; }
+            body:not(.force-desktop) .logo-wrapper { height: 35px; }
+            
+            body:not(.force-desktop) .info-section { padding: 10px; font-size: 12px; }
+            body:not(.force-desktop) .custom-select, 
+            body:not(.force-desktop) .date-input { max-width: 90px; padding: 4px; font-size: 11px; }
+            body:not(.force-desktop) .left-info, 
+            body:not(.force-desktop) .right-info { gap: 5px; }
+            body:not(.force-desktop) #homework-card { padding: 12px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="top-bar hide-on-export">
+        <button class="icon-btn" onclick="openSettings()"><i class="fas fa-cogs"></i> Manage Setup</button>
+    </div>
+
+    <div id="homework-card">
+        <div class="header">
+            <div class="logo-wrapper">
+                <div class="logo-box" id="logo-trigger" onclick="handleLogoClick()">
+                    <img id="display-logo" style="display:none;">
+                    <div id="upload-ui" class="upload-placeholder hide-on-export">Upload Logo</div>
+                    <input type="file" id="logo-file" hidden accept="image/*" onchange="uploadLogo(this)">
+                </div>
+            </div>
+            <div class="school-name-display" id="school-name-final">YOUR SCHOOL NAME</div>
+        </div>
+
+        <div class="info-section">
+            <div class="left-info">
+                <span class="hide-on-export">Class:</span>
+                <select id="class-select" class="custom-select hide-on-export" onchange="loadClassContent()"></select>
+                <select id="section-select" class="custom-select hide-on-export" onchange="updateExportTitles()"></select>
+                <div id="export-class-section" class="show-on-export"></div>
+            </div>
+            <div class="right-info">
+                <span class="hide-on-export">Date:</span>
+                <input type="date" id="date-picker" class="date-input hide-on-export" onchange="updateDisplayDate()">
+                <div id="export-date" class="show-on-export"></div>
+            </div>
+        </div>
+
+        <div class="hw-table">
+            <div class="hw-header">
+                <div>Subject</div>
+                <div>Homework</div>
+                <div>Task</div>
+            </div>
+            <div id="hw-body"></div>
+        </div>
+        
+        <div class="add-btn-wrapper hide-on-export">
+            <button class="add-temp-btn" onclick="addTempSubject()"><i class="fas fa-plus"></i> Add Subject (Temp)</button>
+        </div>
+        
+        <div class="note-section" id="note-wrapper">
+            <textarea class="note-input" id="special-note" rows="1" placeholder="Special Message (Optional)..." oninput="handleNoteInput(this)"></textarea>
+        </div>
+    </div>
+
+    <div class="bottom-action hide-on-export">
+        <button class="share-btn" onclick="share()"><i class="fab fa-whatsapp"></i> Generate & Share</button>
+    </div>
+</div>
+
+<div id="settings-modal" class="modal">
+    <div class="modal-content">
+        <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
+            <h3>School Setup</h3>
+            <button onclick="closeSettings()" style="background:none; border:none; font-size:20px; cursor:pointer;">&times;</button>
+        </div>
+
+        <div class="manager-section">
+            <h4>1. Classes</h4>
+            <div class="manager-controls">
+                <select id="mgr-class-select" onchange="mgrRefreshDetails()"></select>
+                <button class="btn-del" onclick="delClass()">Del</button>
+            </div>
+            <div class="manager-controls">
+                <input type="text" id="new-class-name" placeholder="Class Name">
+                <button class="btn-add" onclick="addClass()">Add</button>
+            </div>
+        </div>
+
+        <div class="manager-section">
+            <h4>2. Sections</h4>
+            <div class="manager-controls">
+                <select id="mgr-sec-select"></select>
+                <button class="btn-del" onclick="delSec()">Del</button>
+            </div>
+            <div class="manager-controls">
+                <input type="text" id="new-sec-name" placeholder="Section Name">
+                <button class="btn-add" onclick="addSec()">Add</button>
+            </div>
+        </div>
+
+        <div class="manager-section">
+            <h4>3. Subjects</h4>
+            <div class="manager-controls">
+                <input type="text" id="new-sub-name" placeholder="Subject Name">
+                <button class="btn-add" onclick="addSub()">Add</button>
+            </div>
+            <ul id="mgr-sub-list" class="subject-list"></ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    let db = JSON.parse(localStorage.getItem('hw_db_v3')) || { "Class 1": { sections: ["Sec A"], subjects: ["Hindi"] } };
+
+    window.onload = () => {
+        loadLogo();
+        initDate();
+        loadSavedNote();
+        refreshMainUI();
+    };
+
+    function handleNoteInput(el) {
+        el.style.height = 'auto';
+        el.style.height = (el.scrollHeight) + 'px';
+        localStorage.setItem('hw_saved_note', el.value);
+    }
+
+    function loadSavedNote() {
+        const savedNote = localStorage.getItem('hw_saved_note');
+        const noteEl = document.getElementById('special-note');
+        if (savedNote !== null) {
+            noteEl.value = savedNote;
+            setTimeout(() => {
+                noteEl.style.height = 'auto';
+                noteEl.style.height = (noteEl.scrollHeight) + 'px';
+            }, 10);
+        }
+    }
+
+    function loadLogo() {
+        const logo = localStorage.getItem('school_logo_fix');
+        if(logo) {
+            document.getElementById('display-logo').src = logo;
+            document.getElementById('display-logo').style.display = 'block';
+            document.getElementById('upload-ui').style.display = 'none';
+        }
+    }
+    function handleLogoClick() {
+        if(!localStorage.getItem('school_logo_fix')) document.getElementById('logo-file').click();
+    }
+    function uploadLogo(input) {
+        if(input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                localStorage.setItem('school_logo_fix', e.target.result);
+                loadLogo();
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function initDate() {
+        const d = new Date();
+        document.getElementById('date-picker').valueAsDate = d;
+        updateDisplayDate();
+    }
+    function updateDisplayDate() {
+        const d = new Date(document.getElementById('date-picker').value);
+        const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+        document.getElementById('export-date').innerText = `Homework date ${String(d.getDate()).padStart(2,'0')}-${String(d.getMonth()+1).padStart(2,'0')}-${d.getFullYear()}, ${days[d.getDay()]}`;
+    }
+
+    function refreshMainUI() {
+        const cSel = document.getElementById('class-select');
+        cSel.innerHTML = '';
+        Object.keys(db).forEach(c => cSel.add(new Option(c, c)));
+        loadClassContent();
+    }
+
+    function loadClassContent() {
+        const c = document.getElementById('class-select').value;
+        const sSel = document.getElementById('section-select');
+        sSel.innerHTML = '';
+        if(db[c]) {
+            if(db[c].sections.length > 0) {
+                sSel.style.display = 'inline-block';
+                db[c].sections.forEach(s => sSel.add(new Option(s, s)));
+            } else sSel.style.display = 'none';
+
+            const body = document.getElementById('hw-body');
+            body.innerHTML = '';
+            db[c].subjects.forEach(sub => createRow(sub));
+        }
+        updateExportTitles();
+    }
+
+    function updateExportTitles() {
+        const cls = document.getElementById('class-select').value;
+        const sec = document.getElementById('section-select').value;
+        document.getElementById('export-class-section').innerText = (sec && document.getElementById('section-select').style.display !== 'none') ? `${cls} - ${sec}` : cls;
+    }
+
+    function createRow(sub) {
+        const row = document.createElement('div');
+        row.className = 'hw-row';
+        row.innerHTML = `<div class="col-subject">${sub}</div><div class="col-tasks">${createTask()}</div>`;
+        document.getElementById('hw-body').appendChild(row);
+        attachEvents(row);
+    }
+
+    function createTask() {
+        return `<div class="task-item"><div class="task-input" contenteditable="true" data-placeholder="Enter Homework..."></div><div class="task-actions hide-on-export"><label class="chk-label"><input type="checkbox" class="cw"> W</label><label class="chk-label"><input type="checkbox" class="cl"> L</label></div><div class="export-task-text show-on-export-flex"></div></div>`;
+    }
+
+    function attachEvents(parent) {
+        parent.querySelectorAll('.task-input').forEach(ti => {
+            ti.onkeydown = (e) => {
+                if(e.key === 'Enter') {
+                    e.preventDefault();
+                    const currentItem = e.target.closest('.task-item');
+                    currentItem.insertAdjacentHTML('afterend', createTask());
+                    const newItem = currentItem.nextElementSibling;
+                    attachEvents(newItem); 
+                    newItem.querySelector('.task-input').focus();
+                }
+                
+                if(e.key === 'Backspace') {
+                    const colTasks = e.target.closest('.col-tasks');
+                    if(ti.textContent.trim() === '' && colTasks.children.length > 1) {
+                        const item = e.target.closest('.task-item');
+                        const prev = item.previousElementSibling;
+                        if(prev) { 
+                            e.preventDefault(); 
+                            item.remove(); 
+                            
+                            const prevInput = prev.querySelector('.task-input');
+                            prevInput.focus(); 
+                            
+                            if (window.getSelection && document.createRange) {
+                                const range = document.createRange();
+                                range.selectNodeContents(prevInput);
+                                range.collapse(false);
+                                const sel = window.getSelection();
+                                sel.removeAllRanges();
+                                sel.addRange(range);
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    function addTempSubject() {
+        const s = prompt("Subject Name:");
+        if(s) createRow(s);
+    }
+
+    function openSettings() {
+        document.getElementById('settings-modal').style.display = 'flex';
+        mgrRefreshClasses();
+    }
+    function closeSettings() { document.getElementById('settings-modal').style.display = 'none'; refreshMainUI(); }
+
+    function mgrRefreshClasses(selectedClass = null) {
+        const sel = document.getElementById('mgr-class-select');
+        sel.innerHTML = '';
+        Object.keys(db).forEach(c => sel.add(new Option(c, c)));
+        if(selectedClass) sel.value = selectedClass;
+        mgrRefreshDetails();
+    }
+
+    function mgrRefreshDetails() {
+        const c = document.getElementById('mgr-class-select').value;
+        const sSel = document.getElementById('mgr-sec-select');
+        const list = document.getElementById('mgr-sub-list');
+        sSel.innerHTML = ''; list.innerHTML = '';
+        if(db[c]) {
+            db[c].sections.forEach(s => sSel.add(new Option(s, s)));
+            db[c].subjects.forEach((sub, i) => {
+                const li = document.createElement('li');
+                li.innerHTML = `${sub} <i class="fas fa-trash" style="color:red; cursor:pointer;" onclick="delSub(${i})"></i>`;
+                list.appendChild(li);
+            });
+        }
+    }
+
+    function addClass() {
+        const n = document.getElementById('new-class-name').value.trim();
+        if(n && !db[n]) { db[n] = {sections:[], subjects:[]}; save(n); document.getElementById('new-class-name').value=''; }
+    }
+    function delClass() {
+        const c = document.getElementById('mgr-class-select').value;
+        if(c && confirm("Delete?")) { delete db[c]; save(); }
+    }
+    function addSec() {
+        const c = document.getElementById('mgr-class-select').value;
+        const n = document.getElementById('new-sec-name').value.trim();
+        if(c && n) { db[c].sections.push(n); save(c); document.getElementById('new-sec-name').value=''; }
+    }
+    function delSec() {
+        const c = document.getElementById('mgr-class-select').value;
+        const s = document.getElementById('mgr-sec-select').value;
+        if(c && s) { db[c].sections = db[c].sections.filter(x => x!==s); save(c); }
+    }
+    function addSub() {
+        const c = document.getElementById('mgr-class-select').value;
+        const n = document.getElementById('new-sub-name').value.trim();
+        if(c && n) { db[c].subjects.push(n); save(c); document.getElementById('new-sub-name').value=''; }
+    }
+    function delSub(i) {
+        const c = document.getElementById('mgr-class-select').value;
+        db[c].subjects.splice(i,1); save(c);
+    }
+    function save(selectedClass = null) {
+        localStorage.setItem('hw_db_v3', JSON.stringify(db));
+        mgrRefreshClasses(selectedClass);
+    }
+
+    async function share() {
+        let validationFailed = false;
+        let errorMsg = "";
+
+        const rows = document.querySelectorAll('.hw-row');
+        for (let r of rows) {
+            const subjectName = r.querySelector('.col-subject').innerText.trim();
+            const tasks = r.querySelectorAll('.task-item');
+            
+            for (let item of tasks) {
+                const text = item.querySelector('.task-input').innerText.trim();
+                if (text !== '') {
+                    const w = item.querySelector('.cw').checked;
+                    const l = item.querySelector('.cl').checked;
+                    if (!w && !l) {
+                        validationFailed = true;
+                        errorMsg = `Please select at least one task (Write or Learn) for Subject: ${subjectName}`;
+                        break;
+                    }
+                }
+            }
+            if (validationFailed) break;
+        }
+
+        if (validationFailed) {
+            alert(errorMsg);
+            return;
+        }
+
+        const btn = document.querySelector('.share-btn');
+        btn.innerHTML = "Processing...";
+        
+        document.querySelectorAll('.task-item').forEach(item => {
+            const w = item.querySelector('.cw').checked, l = item.querySelector('.cl').checked;
+            const exp = item.querySelector('.export-task-text');
+            exp.innerText = (w && l) ? "Write & Learn" : w ? "Write" : l ? "Learn" : "";
+            if(item.querySelector('.task-input').innerText.trim() === '' && item.closest('.col-tasks').children.length > 1) item.style.display='none';
+        });
+
+        const noteWrapper = document.getElementById('note-wrapper');
+        const noteInput = document.getElementById('special-note');
+        
+        if (noteInput.value.trim() === '') {
+            noteWrapper.style.display = 'none'; 
+        }
+
+        document.body.classList.add('exporting');
+        document.body.classList.add('force-desktop');
+        
+        const card = document.getElementById('homework-card');
+        const originalWidth = card.style.width;
+        const originalMaxWidth = card.style.maxWidth;
+        
+        card.style.width = '800px';
+        card.style.maxWidth = '800px';
+
+        if (noteInput.value.trim() !== '') {
+            noteInput.style.height = 'auto';
+            noteInput.style.height = (noteInput.scrollHeight) + 'px';
+        }
+
+        await new Promise(resolve => setTimeout(resolve, 150));
+
+        const canvas = await html2canvas(card, { scale: 2, useCORS: true });
+        
+        card.style.width = originalWidth;
+        card.style.maxWidth = originalMaxWidth;
+        document.body.classList.remove('exporting');
+        document.body.classList.remove('force-desktop');
+        
+        canvas.toBlob(blob => {
+            const file = new File([blob], "Homework.jpg", {type:"image/jpeg"});
+            if(navigator.share) navigator.share({files:[file]});
+            else { const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download="HW.jpg"; a.click(); }
+            
+            document.querySelectorAll('.task-item').forEach(i => i.style.display='flex');
+            noteWrapper.style.display = 'block';
+            if (noteInput.value.trim() !== '') {
+                noteInput.style.height = 'auto';
+                noteInput.style.height = (noteInput.scrollHeight) + 'px';
+            } 
+            btn.innerHTML = '<i class="fab fa-whatsapp"></i> Generate & Share';
+        }, 'image/jpeg');
+    }
+</script>
+</body>
+</html>
