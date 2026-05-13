@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smart Diary - School Daily Homework</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
     <!-- Firebase SDK Scripts -->
@@ -22,13 +22,12 @@
         .icon-btn { background: var(--primary-color); color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
         #homework-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); margin: 0 auto; }
         
-        /* FIX: Header and Logo Sizes Increased */
-        .header { display: flex; align-items: center; justify-content: center; gap: 20px; border-bottom: 3px solid var(--primary-color); padding-bottom: 20px; margin-bottom: 20px; }
-        .logo-wrapper { display: flex; align-items: center; height: 65px; } 
+        .header { display: flex; align-items: center; justify-content: center; gap: 15px; border-bottom: 3px solid var(--primary-color); padding-bottom: 15px; margin-bottom: 20px; }
+        .logo-wrapper { display: flex; align-items: center; height: 40px; } 
         .logo-box { height: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .logo-box img { height: 100%; width: auto; object-fit: contain; }
-        .upload-placeholder { font-size: 12px; border: 1px dashed #ccc; padding: 10px; color: #666; font-weight: 500; }
-        .school-name-display { font-size: 34px; font-weight: 800; color: var(--primary-color); text-transform: uppercase; line-height: 1.2; white-space: nowrap; }
+        .upload-placeholder { font-size: 10px; border: 1px dashed #ccc; padding: 5px; color: #666; }
+        .school-name-display { font-size: 28px; font-weight: 700; color: var(--primary-color); text-transform: uppercase; line-height: 40px; white-space: nowrap; }
         
         .info-section { display: flex; flex-wrap: nowrap; justify-content: space-between; align-items: center; margin-bottom: 20px; background: #dcfce7; padding: 12px 15px; border-radius: 8px; border: 1px solid #bbf7d0; }
         .left-info, .right-info { display: flex; align-items: center; gap: 10px; font-weight: 600; color: var(--primary-color); }
@@ -38,17 +37,14 @@
         .hw-table { width: 100%; margin-bottom: 15px; }
         .hw-header { display: flex; background: var(--primary-color); color: white; border-radius: 8px 8px 0 0; font-weight: 600; text-align: center; }
         .hw-header > div { padding: 12px; display: flex; align-items: center; justify-content: center; }
-        
-        /* FIX: Strict Width to prevent column shifting */
-        .hw-header > div:nth-child(1) { flex: 0 0 140px; width: 140px; max-width: 140px; }
+        .hw-header > div:nth-child(1) { flex: 0 0 140px; }
         .hw-header > div:nth-child(2) { flex: 1; }
-        .hw-header > div:nth-child(3) { flex: 0 0 140px; width: 140px; max-width: 140px; }
+        .hw-header > div:nth-child(3) { flex: 0 0 140px; }
         
         .hw-row { display: flex; border: 1px solid var(--border-color); border-top: none; min-height: 50px; }
         .hw-row:last-child { border-radius: 0 0 8px 8px; border-bottom: 1px solid var(--border-color); overflow: hidden; }
         
-        /* FIX: Strict Width & Word-Break for Subject Column */
-        .col-subject { flex: 0 0 140px; width: 140px; max-width: 140px; padding: 12px; font-weight: 600; background: #f8fafc; border-right: 1px solid var(--border-color); display: flex; align-items: center; justify-content: flex-start; text-align: left; word-break: break-word; overflow-wrap: break-word; }
+        .col-subject { flex: 0 0 140px; padding: 12px; font-weight: 600; background: #f8fafc; border-right: 1px solid var(--border-color); display: flex; align-items: center; justify-content: flex-start; text-align: left; }
         .col-tasks { flex: 1; display: flex; flex-direction: column; min-width: 0; justify-content: center; }
         
         .task-item { display: flex; flex: 1; align-items: center; border-top: 1px dashed #9ca3af; }
@@ -57,7 +53,7 @@
         .task-input { flex: 1; padding: 15px 12px; outline: none; font-size: 15px; line-height: 1.5; word-break: break-word; display: block; }
         .task-input:empty:before { content: attr(data-placeholder); color: #9ca3af; pointer-events: none; }
         
-        .task-actions { flex: 0 0 140px; width: 140px; max-width: 140px; display: flex; gap: 8px; align-items: center; justify-content: center; padding: 10px 12px; border-left: 1px solid var(--border-color); align-self: stretch; }
+        .task-actions { flex: 0 0 140px; display: flex; gap: 8px; align-items: center; justify-content: center; padding: 10px 12px; border-left: 1px solid var(--border-color); align-self: stretch; }
         .chk-label { display: flex; align-items: center; gap: 3px; font-size: 12px; font-weight: 500; cursor: pointer; }
         .export-task-text { flex: 0 0 140px; display: none; padding: 12px; border-left: 1px solid var(--border-color); font-weight: 600; color: var(--primary-color); align-items: center; justify-content: center; font-size: 15px; text-align: center; align-self: stretch; }
         
@@ -94,24 +90,16 @@
         body.exporting .show-on-export-flex { display: flex !important; }
         body.exporting .note-input { border: none !important; padding: 0 !important; background: transparent !important; min-height: 0 !important; margin: 0 !important; }
         body.exporting .note-section { margin-top: 5px !important; margin-bottom: 0 !important; }
-        body.exporting .task-input:empty:before { content: "" !important; } 
+        body.exporting .task-input:empty:before { content: "" !important; }
 
         @media (max-width: 600px) {
-            /* FIX: Strict Max-Widths to prevent mobile column glitch */
             body:not(.force-desktop) .hw-header > div:nth-child(1),
-            body:not(.force-desktop) .col-subject { flex: 0 0 90px !important; width: 90px !important; max-width: 90px !important; word-wrap: break-word; overflow-wrap: break-word; padding: 10px 8px !important; }
-            
+            body:not(.force-desktop) .col-subject { flex: 0 0 85px; }
             body:not(.force-desktop) .hw-header > div:nth-child(3),
-            body:not(.force-desktop) .task-actions { flex: 0 0 70px !important; width: 70px !important; max-width: 70px !important; }
-            
-            body:not(.force-desktop) .task-actions { flex-direction: column; padding: 8px 5px; align-items: flex-start; justify-content: center; }
+            body:not(.force-desktop) .task-actions { flex: 0 0 70px; }
+            body:not(.force-desktop) .task-actions { flex-direction: column; padding: 8px 10px; align-items: flex-start; justify-content: center; }
             body:not(.force-desktop) .task-input { padding: 15px 8px; font-size: 14px; line-height: 22px; }
-            
-            /* Responsive Header Adjustments */
-            body:not(.force-desktop) .logo-wrapper { height: 45px; }
-            body:not(.force-desktop) .school-name-display { font-size: 20px; line-height: 1.2; white-space: normal; text-align: center; }
-            body:not(.force-desktop) .header { flex-direction: row; gap: 10px; padding-bottom: 15px; }
-            
+            body:not(.force-desktop) .school-name-display { font-size: 17px; }
             .action-icons { gap: 8px; }
             .action-list li { padding: 8px; }
         }
@@ -126,7 +114,7 @@
             <div class="logo-wrapper">
                 <div class="logo-box" onclick="triggerLogoUpload()">
                     <img id="display-logo" style="display:none;">
-                    <div id="upload-ui" class="upload-placeholder hide-on-export">Upload Logo</div>
+                    <div id="upload-ui" class="upload-placeholder hide-on-export">Logo</div>
                     <input type="file" id="logo-file" hidden onchange="uploadLogo(this)">
                 </div>
             </div>
@@ -214,8 +202,8 @@
         let actualKeys = Object.keys(db).filter(k => k !== '_classOrder');
         let keys = db['_classOrder'] || actualKeys;
         if (!Array.isArray(keys)) keys = actualKeys;
-        keys = keys.filter(k => actualKeys.includes(k)); 
-        actualKeys.forEach(k => { if(!keys.includes(k)) keys.push(k); }); 
+        keys = keys.filter(k => actualKeys.includes(k)); // Remove deleted
+        actualKeys.forEach(k => { if(!keys.includes(k)) keys.push(k); }); // Append new
         return keys;
     }
 
@@ -555,9 +543,11 @@
         const n = document.getElementById('new-class-name').value.trim();
         if(n && n !== '_classOrder' && !db[n]) { 
             db[n] = {sections:[], subjects:[]}; 
+            
             let order = getClassOrder();
             order.push(n);
             db['_classOrder'] = order;
+            
             activeMgrClass = n; 
             saveToCloud(); 
             document.getElementById('new-class-name').value=''; 
@@ -580,11 +570,14 @@
         if(newName && newName.trim() !== "" && newName !== oldName && newName !== '_classOrder') {
             newName = newName.trim();
             if(db[newName]) { alert("This class already exists!"); return; }
+            
             let order = getClassOrder();
             order = order.map(k => k === oldName ? newName : k);
+            
             db[newName] = db[oldName];
             delete db[oldName];
             db['_classOrder'] = order;
+            
             if(activeMgrClass === oldName) activeMgrClass = newName;
             saveToCloud(); mgrRefreshClasses();
         }
