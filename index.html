@@ -17,9 +17,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         body { background-color: var(--bg-color); color: var(--text-color); padding: 10px; }
         
-        /* Width adjusted to 700px */
         .app-container { max-width: 700px; margin: 0 auto; position: relative; }
-        
         .top-bar { display: flex; justify-content: flex-end; padding: 10px 0; }
         .icon-btn { background: var(--primary-color); color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
         #homework-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); margin: 0 auto; }
@@ -44,22 +42,30 @@
         .hw-header > div:nth-child(3) { flex: 0 0 140px; }
         
         .hw-row { display: flex; border: 1px solid var(--border-color); border-top: none; min-height: 50px; }
-        
-        /* FIX: Bottom corner glitch fixed with overflow: hidden */
         .hw-row:last-child { border-radius: 0 0 8px 8px; border-bottom: 1px solid var(--border-color); overflow: hidden; }
         
         .col-subject { flex: 0 0 140px; padding: 12px; font-weight: 600; background: #f8fafc; border-right: 1px solid var(--border-color); display: flex; align-items: center; justify-content: flex-start; text-align: left; }
-        .col-tasks { flex: 1; display: flex; flex-direction: column; min-width: 0; }
-        .task-item { display: flex; flex: 1; align-items: stretch; border-top: 1px dashed #9ca3af; }
+        .col-tasks { flex: 1; display: flex; flex-direction: column; min-width: 0; justify-content: center; }
+        
+        /* FIX: align-items: center ensures PERFECT vertical centering of the text box itself */
+        .task-item { display: flex; flex: 1; align-items: center; border-top: 1px dashed #9ca3af; }
         .task-item:first-child { border-top: none; }
         
-        /* FIX: Font size increased to 15px */
-        .task-input { flex: 1; padding: 14px 12px; outline: none; font-size: 15px; line-height: 1.5; word-break: break-word; display: flex; align-items: center; }
+        /* FIX: Block display + padding for native editable behavior without cursor jumping */
+        .task-input { flex: 1; padding: 15px 12px; outline: none; font-size: 15px; line-height: 1.5; word-break: break-word; display: block; }
         .task-input:empty:before { content: attr(data-placeholder); color: #9ca3af; pointer-events: none; }
-        .task-actions { flex: 0 0 140px; display: flex; gap: 8px; align-items: center; justify-content: center; padding: 10px 12px; border-left: 1px solid var(--border-color); }
-        .chk-label { display: flex; align-items: center; gap: 3px; font-size: 12px; font-weight: 500; cursor: pointer; }
-        .export-task-text { flex: 0 0 140px; display: none; padding: 12px; border-left: 1px solid var(--border-color); font-weight: 600; color: var(--primary-color); align-items: center; justify-content: center; font-size: 15px; text-align: center; }
         
+        /* align-self: stretch keeps the border full height */
+        .task-actions { flex: 0 0 140px; display: flex; gap: 8px; align-items: center; justify-content: center; padding: 10px 12px; border-left: 1px solid var(--border-color); align-self: stretch; }
+        .chk-label { display: flex; align-items: center; gap: 3px; font-size: 12px; font-weight: 500; cursor: pointer; }
+        .export-task-text { flex: 0 0 140px; display: none; padding: 12px; border-left: 1px solid var(--border-color); font-weight: 600; color: var(--primary-color); align-items: center; justify-content: center; font-size: 15px; text-align: center; align-self: stretch; }
+        
+        .add-btn-wrapper { margin-bottom: 20px; }
+        .add-temp-btn { display: inline-block; font-size: 13px; color: var(--primary-color); cursor: pointer; background: none; border: none; font-weight: 600; }
+        .temp-subj-col { display: flex; align-items: center; justify-content: space-between; }
+        .del-temp-icon { color: #ef4444; cursor: pointer; padding: 4px; font-size: 14px; }
+        .del-temp-icon:hover { opacity: 0.7; }
+
         .note-input { width: 100%; border: 1px dashed #6b7280; padding: 10px 12px; border-radius: 8px; outline: none; resize: none; min-height: 42px; overflow: hidden; color: var(--text-color); background: white; margin-top: 10px; font-size: 14px; line-height: 1.5; }
         
         .bottom-action { display: flex; justify-content: center; align-items: center; width: 100%; margin-top: 20px; margin-bottom: 40px; }
@@ -67,36 +73,49 @@
         
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; }
         .modal-content { background: white; width: 95%; max-width: 600px; padding: 20px; border-radius: 12px; max-height: 90vh; overflow-y: auto; }
-        .manager-section { border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; margin-bottom: 12px; background: #f8fafc; }
-        .manager-controls { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
-        .manager-controls select, .manager-controls input { flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
-        .btn-add { background: var(--primary-color); color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; }
-        .btn-del { background: #ef4444; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; }
-        .subject-list { list-style: none; background: white; border: 1px solid #ddd; border-radius: 4px; }
-        .subject-list li { display: flex; justify-content: space-between; padding: 8px; border-bottom: 1px solid #eee; font-size: 13px; }
+        .manager-section { border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; margin-bottom: 15px; background: #f8fafc; }
+        .manager-section h4 { color: var(--primary-color); margin-bottom: 8px; }
+        .manager-controls { display: flex; gap: 8px; margin-bottom: 5px; }
+        .manager-controls input { flex: 1; padding: 8px 10px; border: 1px solid #ccc; border-radius: 4px; outline: none; }
+        .btn-add { background: var(--primary-color); color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        
+        .action-list { list-style: none; background: white; border: 1px solid #ddd; border-radius: 4px; max-height: 150px; overflow-y: auto; margin-top: 5px; }
+        .action-list li { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; border-bottom: 1px solid #eee; font-size: 13px; cursor: pointer; transition: 0.2s; }
+        .action-list li:hover { background: #f1f5f9; }
+        .action-list li.active { background: #dcfce7; border-left: 4px solid var(--primary-color); font-weight: 600; }
+        .action-icons { display: flex; gap: 12px; color: #6b7280; }
+        .action-icons i { cursor: pointer; font-size: 14px; }
+        .action-icons i:hover { color: var(--primary-color); }
+        .action-icons .fa-trash:hover { color: #ef4444; }
 
-        /* EXPORTING CLASSES - Note Spacing Fixed */
+        /* EXPORTING CLASSES */
         body.exporting .hide-on-export { display: none !important; }
         body.exporting .show-on-export { display: block !important; }
         body.exporting .show-on-export-flex { display: flex !important; }
         body.exporting .note-input { border: none !important; padding: 0 !important; background: transparent !important; min-height: 0 !important; margin: 0 !important; }
         body.exporting .note-section { margin-top: 5px !important; margin-bottom: 0 !important; }
+        body.exporting .task-input:empty:before { content: "" !important; } /* Hidden Placeholder on Export */
 
         @media (max-width: 600px) {
             body:not(.force-desktop) .hw-header > div:nth-child(1),
             body:not(.force-desktop) .col-subject { flex: 0 0 85px; }
             body:not(.force-desktop) .hw-header > div:nth-child(3),
             body:not(.force-desktop) .task-actions { flex: 0 0 70px; }
-            body:not(.force-desktop) .task-actions { flex-direction: column; padding: 8px 10px; align-items: flex-start; }
-            body:not(.force-desktop) .task-input { padding: 10px 8px; font-size: 14px; }
+            body:not(.force-desktop) .task-actions { flex-direction: column; padding: 8px 10px; align-items: flex-start; justify-content: center; }
+            
+            /* Mobile Cursor Fix */
+            body:not(.force-desktop) .task-input { padding: 15px 8px; font-size: 14px; }
+            
             body:not(.force-desktop) .school-name-display { font-size: 17px; }
+            .action-icons { gap: 8px; }
+            .action-list li { padding: 8px; }
         }
     </style>
 </head>
 <body>
 
 <div class="app-container">
-    <div class="top-bar hide-on-export"><button class="icon-btn" onclick="openSettings()"><i class="fas fa-cogs"></i> Setup</button></div>
+    <div class="top-bar hide-on-export"><button class="icon-btn" onclick="openSettings()"><i class="fas fa-cogs"></i> Manage Setup</button></div>
     <div id="homework-card">
         <div class="header">
             <div class="logo-wrapper">
@@ -106,7 +125,6 @@
                     <input type="file" id="logo-file" hidden onchange="uploadLogo(this)">
                 </div>
             </div>
-            <!-- FIX: Default School Name Updated -->
             <div class="school-name-display">WISDOM SCHOOL, UKLANA</div>
         </div>
         <div class="info-section">
@@ -115,6 +133,10 @@
         </div>
         <div class="hw-table"><div class="hw-header"><div>Subject</div><div>Homework</div><div>Task</div></div><div id="hw-body"></div></div>
         
+        <div class="add-btn-wrapper hide-on-export">
+            <button class="add-temp-btn" onclick="addTempSubject()"><i class="fas fa-plus"></i> Add Subject (Temp)</button>
+        </div>
+
         <div class="note-section" id="note-wrapper">
             <textarea class="note-input" id="special-note" rows="1" placeholder="Special Message (Optional)..." oninput="handleNoteInput(this)"></textarea>
         </div>
@@ -127,16 +149,44 @@
 
 <div id="settings-modal" class="modal">
     <div class="modal-content">
-        <h3>Cloud Setup (Universal Sync)</h3><br>
-        <div class="manager-section"><h4>Classes</h4><div class="manager-controls"><select id="mgr-class-select" onchange="mgrRefreshDetails()"></select><button class="btn-del" onclick="delClass()">Del</button></div><div class="manager-controls"><input type="text" id="new-class-name" placeholder="New Class"><button class="btn-add" onclick="addClass()">Add</button></div></div>
-        <div class="manager-section"><h4>Sections</h4><div class="manager-controls"><select id="mgr-sec-select"></select><button class="btn-del" onclick="delSec()">Del</button></div><div class="manager-controls"><input type="text" id="new-sec-name" placeholder="New Section"><button class="btn-add" onclick="addSec()">Add</button></div></div>
-        <div class="manager-section"><h4>Subjects</h4><div class="manager-controls"><input type="text" id="new-sub-name" placeholder="New Subject"><button class="btn-add" onclick="addSub()">Add</button></div><ul id="mgr-sub-list" class="subject-list"></ul></div>
-        <button onclick="closeSettings()" class="btn-add" style="width:100%">Close & Save</button>
+        <div style="display:flex; justify-content:space-between; margin-bottom:15px; align-items: center;">
+            <h3 style="color: var(--primary-color);">Cloud App Setup</h3>
+            <button onclick="closeSettings()" style="background:none; border:none; font-size:24px; cursor:pointer; color: #ef4444;">&times;</button>
+        </div>
+        
+        <div class="manager-section">
+            <h4>1. Classes <span style="font-size:11px; font-weight:normal; color:#666;">(Click a class to view its sections/subjects)</span></h4>
+            <div class="manager-controls">
+                <input type="text" id="new-class-name" placeholder="Type new class name...">
+                <button class="btn-add" onclick="addClass()">Add</button>
+            </div>
+            <ul id="mgr-class-list" class="action-list"></ul>
+        </div>
+
+        <div class="manager-section">
+            <h4>2. Sections <span id="lbl-sec-class" style="font-size:12px; color:#666;"></span></h4>
+            <div class="manager-controls">
+                <input type="text" id="new-sec-name" placeholder="Type new section...">
+                <button class="btn-add" onclick="addSec()">Add</button>
+            </div>
+            <ul id="mgr-sec-list" class="action-list"></ul>
+        </div>
+
+        <div class="manager-section">
+            <h4>3. Subjects <span id="lbl-sub-class" style="font-size:12px; color:#666;"></span></h4>
+            <div class="manager-controls">
+                <input type="text" id="new-sub-name" placeholder="Type new subject...">
+                <button class="btn-add" onclick="addSub()">Add</button>
+            </div>
+            <ul id="mgr-sub-list" class="action-list"></ul>
+        </div>
+        
+        <button onclick="closeSettings()" class="btn-add" style="width:100%; margin-top: 10px; padding: 12px; font-size: 16px;">Done & Save</button>
     </div>
 </div>
 
 <script>
-    // 🔥 FINAL FIREBASE CONFIG DETAILS 🔥
+    // 🔥 FIREBASE CONFIG 🔥
     const firebaseConfig = {
         apiKey: "AIzaSyAWJ2Xjmk1pt0zfC9N5ClVBnMXGdlhrjNw",
         authDomain: "smart-diary-3be54.firebaseapp.com",
@@ -150,11 +200,21 @@
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
-    let db = {}; 
+    // Cache System for Instant Loading
+    let db = JSON.parse(localStorage.getItem('hw_cached_db')) || {}; 
+    let tempSubs = JSON.parse(localStorage.getItem('hw_temp_subs')) || { global: [], classes: {} };
+    let activeMgrClass = null; 
 
     window.onload = () => {
         initDate();
         loadSavedNote();
+        
+        // Fast Load from Cache
+        const cachedLogo = localStorage.getItem('hw_cached_logo');
+        if (cachedLogo) applyLogo(cachedLogo);
+        if (Object.keys(db).length > 0) refreshMainUI();
+        
+        // Background Sync
         syncFromCloud();
     };
 
@@ -162,9 +222,8 @@
         database.ref('school_logo').on('value', (snapshot) => {
             const logoData = snapshot.val();
             if (logoData) {
-                document.getElementById('display-logo').src = logoData;
-                document.getElementById('display-logo').style.display = 'block';
-                document.getElementById('upload-ui').style.display = 'none';
+                localStorage.setItem('hw_cached_logo', logoData);
+                applyLogo(logoData);
             }
         });
 
@@ -172,18 +231,27 @@
             const data = snapshot.val();
             if (data) {
                 db = data;
-                refreshMainUI();
+                localStorage.setItem('hw_cached_db', JSON.stringify(db));
             } else {
-                db = { "Class 1": { sections: ["Sec A"], subjects: ["Hindi"] } };
-                saveToCloud();
+                if(Object.keys(db).length === 0) {
+                    db = { "Class 1": { sections: ["Sec A"], subjects: ["Hindi"] } };
+                    saveToCloud();
+                }
             }
+            refreshMainUI();
+            if(document.getElementById('settings-modal').style.display === 'flex') mgrRefreshClasses();
         });
+    }
+
+    function applyLogo(logoData) {
+        document.getElementById('display-logo').src = logoData;
+        document.getElementById('display-logo').style.display = 'block';
+        document.getElementById('upload-ui').style.display = 'none';
     }
 
     function saveToCloud() { database.ref('school_setup').set(db); }
 
     function triggerLogoUpload() { document.getElementById('logo-file').click(); }
-    
     function uploadLogo(input) {
         if(input.files && input.files[0]) {
             const reader = new FileReader();
@@ -204,7 +272,7 @@
         const savedNote = localStorage.getItem('hw_saved_note');
         if (savedNote) {
             document.getElementById('special-note').value = savedNote;
-            setTimeout(() => handleNoteInput(document.getElementById('special-note')), 100);
+            setTimeout(() => handleNoteInput(document.getElementById('special-note')), 10);
         }
     }
 
@@ -226,17 +294,36 @@
                 sSel.style.display = 'inline-block';
                 db[c].sections.forEach(s => sSel.add(new Option(s, s)));
             } else sSel.style.display = 'none';
+            
             const body = document.getElementById('hw-body');
             body.innerHTML = '';
-            db[c].subjects.forEach(sub => createRow(sub));
+            
+            if(db[c].subjects) db[c].subjects.forEach(sub => createRow(sub));
+            if(tempSubs.global && tempSubs.global.length > 0) {
+                tempSubs.global.forEach((sub, idx) => createRow(sub, true, 'global', null, idx));
+            }
+            if(tempSubs.classes && tempSubs.classes[c] && tempSubs.classes[c].length > 0) {
+                tempSubs.classes[c].forEach((sub, idx) => createRow(sub, true, 'class', c, idx));
+            }
         }
         updateExportTitles();
     }
     
-    function createRow(sub) {
+    // FIX: (Temp) Label Removed. Looks like a clean regular subject.
+    function createRow(sub, isTemp = false, tempType = null, classId = null, tempIdx = null) {
         const row = document.createElement('div');
         row.className = 'hw-row';
-        row.innerHTML = `<div class="col-subject">${sub}</div><div class="col-tasks">${createTask()}</div>`;
+        
+        let subjectHTML = `<div class="col-subject"><span>${sub}</span></div>`;
+        
+        if (isTemp) {
+            subjectHTML = `<div class="col-subject temp-subj-col">
+                <span style="flex:1">${sub}</span>
+                <i class="fas fa-times del-temp-icon hide-on-export" onclick="removeTempSubject('${tempType}', '${classId}', ${tempIdx})"></i>
+            </div>`;
+        }
+        
+        row.innerHTML = `${subjectHTML}<div class="col-tasks">${createTask()}</div>`;
         document.getElementById('hw-body').appendChild(row);
         attachEvents(row);
     }
@@ -266,48 +353,35 @@
         });
     }
 
-    function addClass() {
-        const n = document.getElementById('new-class-name').value.trim();
-        if(n && !db[n]) { db[n] = {sections:[], subjects:[]}; saveToCloud(); document.getElementById('new-class-name').value=''; }
-    }
-    function delClass() { const c = document.getElementById('mgr-class-select').value; if(c && confirm("Delete?")) { delete db[c]; saveToCloud(); } }
-    function addSec() {
-        const c = document.getElementById('mgr-class-select').value;
-        const n = document.getElementById('new-sec-name').value.trim();
-        if(c && n) { if(!db[c].sections) db[c].sections=[]; db[c].sections.push(n); saveToCloud(); document.getElementById('new-sec-name').value=''; }
-    }
-    function delSec() {
-        const c = document.getElementById('mgr-class-select').value;
-        const s = document.getElementById('mgr-sec-select').value;
-        if(c && s) { db[c].sections = db[c].sections.filter(x => x!==s); saveToCloud(); }
-    }
-    function addSub() {
-        const c = document.getElementById('mgr-class-select').value;
-        const n = document.getElementById('new-sub-name').value.trim();
-        if(c && n) { if(!db[c].subjects) db[c].subjects=[]; db[c].subjects.push(n); saveToCloud(); document.getElementById('new-sub-name').value=''; }
-    }
-    function delSub(i) { const c = document.getElementById('mgr-class-select').value; db[c].subjects.splice(i,1); saveToCloud(); }
+    function addTempSubject() {
+        const currentClass = document.getElementById('class-select').value;
+        if(!currentClass) return alert("Select a class first!");
 
-    function openSettings() { document.getElementById('settings-modal').style.display = 'flex'; mgrRefreshClasses(); }
-    function closeSettings() { document.getElementById('settings-modal').style.display = 'none'; }
-    function mgrRefreshClasses() {
-        const sel = document.getElementById('mgr-class-select');
-        sel.innerHTML = '';
-        Object.keys(db).forEach(c => sel.add(new Option(c, c)));
-        mgrRefreshDetails();
+        const subName = prompt("Enter Temporary Subject Name:");
+        if(!subName || subName.trim() === "") return;
+
+        const isGlobal = confirm("Do you want to add this subject for ALL classes?\n\n[OK] = Yes, All Classes\n[Cancel] = No, Only this Class");
+
+        if(isGlobal) {
+            tempSubs.global.push(subName.trim());
+        } else {
+            if(!tempSubs.classes[currentClass]) tempSubs.classes[currentClass] = [];
+            tempSubs.classes[currentClass].push(subName.trim());
+        }
+        
+        localStorage.setItem('hw_temp_subs', JSON.stringify(tempSubs));
+        loadClassContent();
     }
-    function mgrRefreshDetails() {
-        const c = document.getElementById('mgr-class-select').value;
-        const sSel = document.getElementById('mgr-sec-select');
-        const list = document.getElementById('mgr-sub-list');
-        sSel.innerHTML = ''; list.innerHTML = '';
-        if(db[c]) {
-            if(db[c].sections) db[c].sections.forEach(s => sSel.add(new Option(s, s)));
-            if(db[c].subjects) db[c].subjects.forEach((sub, i) => {
-                const li = document.createElement('li');
-                li.innerHTML = `${sub} <i class="fas fa-trash" style="color:red; cursor:pointer;" onclick="delSub(${i})"></i>`;
-                list.appendChild(li);
-            });
+
+    function removeTempSubject(type, classId, index) {
+        if(confirm("Remove this temporary subject?")) {
+            if(type === 'global') {
+                tempSubs.global.splice(index, 1);
+            } else {
+                tempSubs.classes[classId].splice(index, 1);
+            }
+            localStorage.setItem('hw_temp_subs', JSON.stringify(tempSubs));
+            loadClassContent();
         }
     }
 
@@ -324,25 +398,45 @@
     }
 
     async function share() {
+        let missingTasks = false;
+        const rows = document.querySelectorAll('.hw-row');
+        
+        for (let r of rows) {
+            const tasks = r.querySelectorAll('.task-item');
+            for (let item of tasks) {
+                const text = item.querySelector('.task-input').innerText.trim();
+                if (text !== '') {
+                    const w = item.querySelector('.cw').checked;
+                    const l = item.querySelector('.cl').checked;
+                    if (!w && !l) missingTasks = true;
+                }
+            }
+        }
+
+        if (missingTasks) {
+            const proceed = confirm("Aapne kuch homework me Write (W) ya Learn (L) par tick nahi kiya hai.\n\nBina select kiye share karna chahte hain? \n[OK] = Anyway (Bina tick ke bhejein) \n[Cancel] = Cancel (Wapas jake tick karein)");
+            if (!proceed) return;
+        }
+
         const btn = document.querySelector('.share-btn');
         btn.innerHTML = "Generating...";
+        
         document.querySelectorAll('.task-item').forEach(item => {
             const w = item.querySelector('.cw').checked, l = item.querySelector('.cl').checked;
             const exp = item.querySelector('.export-task-text');
             exp.innerText = (w && l) ? "Write & Learn" : w ? "Write" : l ? "Learn" : "";
             if(item.querySelector('.task-input').innerText.trim() === '' && item.closest('.col-tasks').children.length > 1) item.style.display='none';
         });
+        
         const noteEl = document.getElementById('special-note');
         if (noteEl.value.trim() === '') {
             document.getElementById('note-wrapper').style.display = 'none';
         }
 
-        // Export size adjusted to 700px
         document.body.classList.add('exporting', 'force-desktop');
         const card = document.getElementById('homework-card');
         card.style.width = '700px';
 
-        // Recalculate exact height for Note Box after padding is removed for Export
         if (noteEl.value.trim() !== '') {
             noteEl.style.height = 'auto';
             noteEl.style.height = (noteEl.scrollHeight) + 'px';
@@ -356,7 +450,6 @@
         document.getElementById('note-wrapper').style.display = 'block';
         document.querySelectorAll('.task-item').forEach(i => i.style.display='flex');
         
-        // Restore Note Box height normal view
         if (noteEl.value.trim() !== '') {
             noteEl.style.height = 'auto';
             noteEl.style.height = (noteEl.scrollHeight) + 'px';
@@ -368,6 +461,147 @@
             else { const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download="HW.jpg"; a.click(); }
             btn.innerHTML = '<i class="fab fa-whatsapp"></i> Share Homework';
         }, 'image/jpeg');
+    }
+
+    function openSettings() { 
+        document.getElementById('settings-modal').style.display = 'flex'; 
+        if(!activeMgrClass || !db[activeMgrClass]) activeMgrClass = Object.keys(db)[0] || null;
+        mgrRefreshClasses(); 
+    }
+    function closeSettings() { document.getElementById('settings-modal').style.display = 'none'; }
+    
+    function mgrRefreshClasses() {
+        const clList = document.getElementById('mgr-class-list');
+        clList.innerHTML = '';
+        let keys = Object.keys(db);
+        if(keys.length > 0 && !activeMgrClass) activeMgrClass = keys[0];
+        if(keys.length === 0) activeMgrClass = null;
+
+        keys.forEach((c, index) => {
+            const li = document.createElement('li');
+            if(c === activeMgrClass) li.className = 'active';
+            li.onclick = () => { activeMgrClass = c; mgrRefreshClasses(); };
+            
+            li.innerHTML = `
+                <span>${c}</span>
+                <div class="action-icons">
+                    <i class="fas fa-arrow-up" title="Move Up" onclick="event.stopPropagation(); reorderClass('${c}', -1)"></i>
+                    <i class="fas fa-arrow-down" title="Move Down" onclick="event.stopPropagation(); reorderClass('${c}', 1)"></i>
+                    <i class="fas fa-edit" title="Rename" onclick="event.stopPropagation(); renameClass('${c}')"></i>
+                    <i class="fas fa-trash" title="Delete" onclick="event.stopPropagation(); delClass('${c}')"></i>
+                </div>
+            `;
+            clList.appendChild(li);
+        });
+        mgrRefreshDetails();
+    }
+
+    function mgrRefreshDetails() {
+        const secList = document.getElementById('mgr-sec-list');
+        const subList = document.getElementById('mgr-sub-list');
+        secList.innerHTML = ''; subList.innerHTML = '';
+        
+        if(!activeMgrClass || !db[activeMgrClass]) {
+            document.getElementById('lbl-sec-class').innerText = "";
+            document.getElementById('lbl-sub-class').innerText = "";
+            return;
+        }
+
+        document.getElementById('lbl-sec-class').innerText = `(for ${activeMgrClass})`;
+        document.getElementById('lbl-sub-class').innerText = `(for ${activeMgrClass})`;
+
+        if(db[activeMgrClass].sections) {
+            db[activeMgrClass].sections.forEach((s, i) => {
+                const li = document.createElement('li');
+                li.innerHTML = `<span>${s}</span><div class="action-icons">
+                    <i class="fas fa-arrow-up" onclick="reorderSec(${i}, -1)"></i>
+                    <i class="fas fa-arrow-down" onclick="reorderSec(${i}, 1)"></i>
+                    <i class="fas fa-edit" onclick="renameSec(${i})"></i>
+                    <i class="fas fa-trash" onclick="delSec(${i})"></i>
+                </div>`;
+                secList.appendChild(li);
+            });
+        }
+        if(db[activeMgrClass].subjects) {
+            db[activeMgrClass].subjects.forEach((s, i) => {
+                const li = document.createElement('li');
+                li.innerHTML = `<span>${s}</span><div class="action-icons">
+                    <i class="fas fa-arrow-up" onclick="reorderSub(${i}, -1)"></i>
+                    <i class="fas fa-arrow-down" onclick="reorderSub(${i}, 1)"></i>
+                    <i class="fas fa-edit" onclick="renameSub(${i})"></i>
+                    <i class="fas fa-trash" onclick="delSub(${i})"></i>
+                </div>`;
+                subList.appendChild(li);
+            });
+        }
+    }
+
+    function addClass() {
+        const n = document.getElementById('new-class-name').value.trim();
+        if(n && !db[n]) { db[n] = {sections:[], subjects:[]}; activeMgrClass = n; saveToCloud(); document.getElementById('new-class-name').value=''; mgrRefreshClasses(); }
+    }
+    function delClass(c) {
+        if(confirm(`Delete Class "${c}" completely?`)) { delete db[c]; if(activeMgrClass === c) activeMgrClass = null; saveToCloud(); mgrRefreshClasses(); }
+    }
+    function renameClass(oldName) {
+        let newName = prompt("Enter new name for class:", oldName);
+        if(newName && newName.trim() !== "" && newName !== oldName) {
+            newName = newName.trim();
+            if(db[newName]) { alert("This class already exists!"); return; }
+            let newDb = {};
+            Object.keys(db).forEach(k => { if(k === oldName) newDb[newName] = db[oldName]; else newDb[k] = db[k]; });
+            db = newDb; if(activeMgrClass === oldName) activeMgrClass = newName;
+            saveToCloud(); mgrRefreshClasses();
+        }
+    }
+    function reorderClass(c, direction) {
+        let keys = Object.keys(db);
+        let idx = keys.indexOf(c);
+        if ((direction === -1 && idx > 0) || (direction === 1 && idx < keys.length - 1)) {
+            let swapIdx = idx + direction;
+            [keys[idx], keys[swapIdx]] = [keys[swapIdx], keys[idx]];
+            let newDb = {};
+            keys.forEach(k => { newDb[k] = db[k]; });
+            db = newDb; saveToCloud(); mgrRefreshClasses();
+        }
+    }
+
+    function addSec() {
+        if(!activeMgrClass) return;
+        const n = document.getElementById('new-sec-name').value.trim();
+        if(n) { if(!db[activeMgrClass].sections) db[activeMgrClass].sections=[]; db[activeMgrClass].sections.push(n); saveToCloud(); document.getElementById('new-sec-name').value=''; mgrRefreshDetails(); }
+    }
+    function delSec(i) { if(confirm("Delete this section?")) { db[activeMgrClass].sections.splice(i, 1); saveToCloud(); mgrRefreshDetails(); } }
+    function renameSec(i) {
+        let old = db[activeMgrClass].sections[i];
+        let nw = prompt("Rename section:", old);
+        if(nw && nw.trim() !== "") { db[activeMgrClass].sections[i] = nw.trim(); saveToCloud(); mgrRefreshDetails(); }
+    }
+    function reorderSec(idx, dir) {
+        let arr = db[activeMgrClass].sections;
+        if((dir === -1 && idx > 0) || (dir === 1 && idx < arr.length - 1)) {
+            [arr[idx], arr[idx+dir]] = [arr[idx+dir], arr[idx]];
+            saveToCloud(); mgrRefreshDetails();
+        }
+    }
+
+    function addSub() {
+        if(!activeMgrClass) return;
+        const n = document.getElementById('new-sub-name').value.trim();
+        if(n) { if(!db[activeMgrClass].subjects) db[activeMgrClass].subjects=[]; db[activeMgrClass].subjects.push(n); saveToCloud(); document.getElementById('new-sub-name').value=''; mgrRefreshDetails(); }
+    }
+    function delSub(i) { if(confirm("Delete this subject?")) { db[activeMgrClass].subjects.splice(i, 1); saveToCloud(); mgrRefreshDetails(); } }
+    function renameSub(i) {
+        let old = db[activeMgrClass].subjects[i];
+        let nw = prompt("Rename subject:", old);
+        if(nw && nw.trim() !== "") { db[activeMgrClass].subjects[i] = nw.trim(); saveToCloud(); mgrRefreshDetails(); }
+    }
+    function reorderSub(idx, dir) {
+        let arr = db[activeMgrClass].subjects;
+        if((dir === -1 && idx > 0) || (dir === 1 && idx < arr.length - 1)) {
+            [arr[idx], arr[idx+dir]] = [arr[idx+dir], arr[idx]];
+            saveToCloud(); mgrRefreshDetails();
+        }
     }
 </script>
 </body>
